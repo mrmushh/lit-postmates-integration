@@ -8,6 +8,11 @@
       "name": "Khua Khao",
       "quantity" : 1,
       "size" : "small"
+    },
+    {
+      "name": "Mok Pla",
+      "quantity" : 1,
+      "size" : "small"
     }
   ],
   "pickup_address" : "250 K St. NE, Washington, DC",
