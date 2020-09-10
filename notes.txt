@@ -1,0 +1,46 @@
+Postmates Integration Development Log
+Date: 09/09/2020
+figured out how to make api calls and set up a webhook endpoint
+everything curl (website) is a great resource
+
+Can make api calls with CURL
+curl -v --user <API_KEY> https://api.example.com | jq '.'
+the user part is basic http authorization
+the v is for verbose (useful when testing)
+the pipe at the end is to format json so its readable in standard output
+jq i had to install (extra dependency)
+alternativly you can pipe like this: | json_pp
+
+Can make post request with CURL
+curl --user $API_KEY: -H "Content-Type: application/json" -d @$FILE  https://api.postmates.com/v1/customers/$CUSTOMER_ID/deliveries
+-H is to specify that you are sending json instead of url encoded data
+-d specifies what data you want to post (curl already knows you're using POST when using this option)
+so there's no need to specify it with -X POST 
+
+learned how to pretty format json in vim in case the json is all on one line
+this is the command 
+:!% python -m json.tool 
+
+learned ngrok is super useful for testing, I set up a simple web server with a public url in minutes
+you have to first make a python server that accepts post and get
+downloaded one from the internet (in server.py file)
+~ sudo ./server.py 80
+make an ngrok account and install ngrok
+make sure that your account authtoken is in config file with:
+~ ./ngrok autoken @YOUR_AUTH_TOKEN (which you get from your profile)
+fire it up
+~ ./ngrok http 80
+can access your local webserver over the internet!  
+
+functionality I am working on first is just printing postmates order to console
+things to remember to do in app:
+verify that post is from postmates with sha 256 signature
+look up the items in google sheets to see what printer to go to
+only parse webhooks that have status = pickup and kind is event.delivery.status and get the manifest items from there
+
+Date: 09/10/20
+make express skeleton
+make a git repository
+found out you can make global git repositories for user based ignore files
+git config --global core.excludesfile ~/.gitignore
+gonna use this to ignore vim temporary files

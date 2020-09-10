@@ -1,0 +1,16 @@
+{
+  "dropoff_address": "1266 Oates St. NE, Washington, DC",
+  "dropoff_name": "The Oates Home",
+  "dropoff_phone_number": "2015752099",
+  "manifest": "some food",
+  "manifest_items": [
+    {
+      "name": "Khua Khao",
+      "quantity" : 1,
+      "size" : "small"
+    }
+  ],
+  "pickup_address" : "250 K St. NE, Washington, DC",
+  "pickup_name": "Laos in Town",
+  "pickup_phone_number": "2028646620"
+}
