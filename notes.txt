@@ -45,3 +45,5 @@ found out you can make global git repositories for user based ignore files
 git config --global core.excludesfile ~/.gitignore
 gonna use this to ignore vim temporary files
 git remote rm <remote-name> (removes a remote)
+to unstage all files in git use:
+git reset
