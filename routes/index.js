@@ -27,7 +27,6 @@ setInterval( function () {
     let current_order = getOrderInfo(queue.shift());
     orders.push(current_order);
   }
-  //console.log("queue is empty");
 }, 3000 );
 
 /* Add printer information to order objects */
@@ -35,11 +34,54 @@ setInterval( function () {
   if(orders.length > 0) {
     assignItemsToPrinters(orders);
   }
-  //console.log("orders is empty");
 }, 3000 );
 
-/*Helper functions*/
+/* HTML Receipt Template Helper*/
+function createReceipts(myOrder){
+  var postData = {
+    orderId: '',
+    foodrunHTML: '',
+    entreeHTML: '',
+    appHTML: '',
+    dessertHTML: ''
+  }
+  let p_types = ["Foodrun", "App", "Entree", "Dessert"];
+  let receipt_template =`
+    <!DOCTYPE html>
+    <html>
+    <head> 
+      <style>
+        .right {float: right;}
+        .left {float: left;}
+      </style>
+    </head> 
+    <body>
+      <h3>
+        <div> ${gType} </div>
+        <div> ${gName} </div>
+        <div> ${gPhone} </div>  
+        <div> ${gDelivery} </div>  
+      </h3>
+      <p> ${gTimestamp} </p> 
+      <p> ${gReadyBy} </p> 
+      <div>
+        <span class= "right">Foodrun</span>
+        <span class= "left">Grubhub</span>
+      </div>
+      <br>
+      <hr>
+      <div>
+        <h4>${gMarkup}</h4>
+      </div>
+      <hr>
+      <p>${gComment}</p>
+      <p>${gDelComment}</p>
+    </body>
+    </html>
+  `;
+}
 
+/*Helper functions*/
 function getOrderInfo(request_body) {
   let order = {};
   order.delivery_id = request_body.delivery_id;
