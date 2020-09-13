@@ -16,7 +16,7 @@ module.exports = router;
 router.post("/", (req, res) => {
   res.status(200);
   res.send();
-  //do delivery id check here (we only want one post)
+  //TODO do delivery id check here (we only want one post)
   queue.push(req.body);
 })
 
@@ -24,62 +24,89 @@ router.post("/", (req, res) => {
 setInterval( function () {
   if(queue.length > 0) {
     console.log("data queue has " + queue.length + " items in it");
-    let current_order = getOrderInfo(queue.shift());
-    orders.push(current_order);
+    //push the post data to an orders queue
+    orders.push(getOrderInfo(queue.shift()));
   }
 }, 3000 );
 
 /* Add printer information to order objects */
 setInterval( function () {
   if(orders.length > 0) {
+    console.log("order queue has " + orders.length + " items in it");
     assignItemsToPrinters(orders);
+    makeHTMLReceipts(orders);
+    sendReciptsToPrinters(orders);
   }
 }, 3000 );
-
+/* Use AXIOS to post data to integromat */
+function sendReciptsToPrinters(postObject){
+  //TODO
+}
 /* HTML Receipt Template Helper*/
-function createReceipts(myOrder){
+
+function makeHTMLReceipts(myOrders){
+  console.log(myOrders.length);
   var postData = {
     orderId: '',
     foodrunHTML: '',
     entreeHTML: '',
     appHTML: '',
     dessertHTML: ''
-  }
+  };
   let p_types = ["Foodrun", "App", "Entree", "Dessert"];
-  let receipt_template =`
-    <!DOCTYPE html>
-    <html>
-    <head> 
-      <style>
-        .right {float: right;}
-        .left {float: left;}
-      </style>
-    </head> 
-    <body>
-      <h3>
-        <div> ${gType} </div>
-        <div> ${gName} </div>
-        <div> ${gPhone} </div>  
-        <div> ${gDelivery} </div>  
-      </h3>
-      <p> ${gTimestamp} </p> 
-      <p> ${gReadyBy} </p> 
-      <div>
-        <span class= "right">Foodrun</span>
-        <span class= "left">Grubhub</span>
-      </div>
-      <br>
-      <hr>
-      <div>
-        <h4>${gMarkup}</h4>
-      </div>
-      <hr>
-      <p>${gComment}</p>
-      <p>${gDelComment}</p>
-    </body>
-    </html>
-  `;
+  for(let i = 0; i < myOrders.length ; i++) {
+    for( let p = 0; p < p_types.length; p++) {
+      if(myOrders[i].foodrun_items.length > 0 && p_types[p] === "Foodrun"){
+        console.log("Constructing receipt for " + p_types[p]);
+      }
+      if(myOrders[i].app_items.length > 0 && p_types[p] === "App"){
+        console.log("Constructing receipt for " + p_types[p]);
+      }
+      if(myOrders[i].entree_items.length > 0 && p_types[p] === "Entree"){
+        console.log("Constructing receipt for " + p_types[p]);
+      }
+      if(myOrders[i].dessert_items.length > 0 && p_types[p] === "Dessert"){
+        console.log("Constructing receipt for " + p_types[p]);
+      }
+      //THIS WHERE FUNCTION GOING TO DO HEAVY LIFTING
+    }
+    console.log(myOrders.shift());
+    console.log(postData);
+  }
 }
+var receipt_template =`
+  <!DOCTYPE html>
+  <html>
+  <head> 
+    <style>
+      .right {float: right;}
+      .left {float: left;}
+    </style>
+  </head> 
+  <body>
+    <h3>
+      <div> gType </div>
+      <div> gName </div>
+      <div> gPhone </div>  
+      <div> gDelivery </div>  
+    </h3>
+    <p> gTimestamp </p> 
+    <p> gReadyBy </p> 
+    <div>
+      <span class= "right">Foodrun</span>
+      <span class= "left">Grubhub</span>
+    </div>
+    <br>
+    <hr>
+    <div>
+      <h4> gMarkup</h4>
+    </div>
+    <hr>
+    <p>gComment</p>
+    <p>gDelComment</p>
+  </body>
+  </html>
+`;
 
 /*Helper functions*/
 function getOrderInfo(request_body) {
@@ -130,7 +157,6 @@ function assignItemsToPrinters(orderQueue){
           orderQueue[i].dessert_items.push(orderQueue[i].all_items[item]);
         }
       }
-      console.log(orderQueue.shift())
     }
   }
 }
