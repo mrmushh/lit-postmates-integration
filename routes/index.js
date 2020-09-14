@@ -55,60 +55,102 @@ function makeHTMLReceipts(myOrders){
   };
   let p_types = ["Foodrun", "App", "Entree", "Dessert"];
   for(let i = 0; i < myOrders.length ; i++) {
+    postData.orderId = myOrders[i].delivery_id;
     for( let p = 0; p < p_types.length; p++) {
+      var manifestHTML = "";
       if(myOrders[i].foodrun_items.length > 0 && p_types[p] === "Foodrun"){
+        for(let j = 0; j < myOrders[i].foodrun_items.length; j++){
+          manifestHTML += `
+            <p> ${myOrders[i].foodrun_items[j].quantity} ${myOrders[i].foodrun_items[j].name} </p>
+            <ul style="list-style-type:none">
+            <li>${myOrders[i].foodrun_items[j].additional_data}</li>
+            </ul>
+          `
+        }
         console.log("Constructing receipt for " + p_types[p]);
+        let r = createReceipt(myOrders[i].customer_name, myOrders[i].order_number, myOrders[i].placed_at, myOrders[i].ready_by, p_types[p], manifestHTML);
+        postData.foodrunHTML = r;
       }
       if(myOrders[i].app_items.length > 0 && p_types[p] === "App"){
+        for(let j = 0; j < myOrders[i].app_items.length; j++){
+          manifestHTML += `
+            <p> ${myOrders[i].app_items[j].quantity} ${myOrders[i].app_items[j].name} </p>
+            <ul style="list-style-type:none">
+            <li>${myOrders[i].app_items[j].additional_data}</li>
+            </ul>
+          `
+        }
         console.log("Constructing receipt for " + p_types[p]);
+        let r = createReceipt(myOrders[i].customer_name, myOrders[i].order_number, myOrders[i].placed_at, myOrders[i].ready_by, p_types[p], manifestHTML);
+        postData.appHTML = r;
       }
       if(myOrders[i].entree_items.length > 0 && p_types[p] === "Entree"){
+        for(let j = 0; j < myOrders[i].entree_items.length; j++){
+          manifestHTML += `
+            <p> ${myOrders[i].entree_items[j].quantity} ${myOrders[i].entree_items[j].name} </p>
+            <ul style="list-style-type:none">
+            <li>${myOrders[i].entree_items[j].additional_data}</li>
+            </ul>
+          `
+        }
         console.log("Constructing receipt for " + p_types[p]);
+        let r = createReceipt(myOrders[i].customer_name, myOrders[i].order_number, myOrders[i].placed_at, myOrders[i].ready_by, p_types[p], manifestHTML);
+        postData.entreeHTML = r;
       }
       if(myOrders[i].dessert_items.length > 0 && p_types[p] === "Dessert"){
+        for(let j = 0; j < myOrders[i].dessert_items.length; j++){
+          manifestHTML += `
+            <p> ${myOrders[i].dessert_items[j].quantity} ${myOrders[i].dessert_items[j].name} </p>
+            <ul style="list-style-type:none">
+            <li>${myOrders[i].dessert_items[j].additional_data}</li>
+            </ul>
+          `
+        }
         console.log("Constructing receipt for " + p_types[p]);
+        let r = createReceipt(myOrders[i].customer_name, myOrders[i].order_number, myOrders[i].placed_at, myOrders[i].ready_by, p_types[p], manifestHTML);
+        postData.dessertHTML = r;
       }
-      //THIS WHERE FUNCTION GOING TO DO HEAVY LIFTING
     }
     console.log(myOrders.shift());
     console.log(postData);
   }
 }
-var receipt_template =`
-  <!DOCTYPE html>
-  <html>
-  <head> 
-    <style>
-      .right {float: right;}
-      .left {float: left;}
-    </style>
-  </head> 
-  <body>
-    <h3>
-      <div> gType </div>
-      <div> gName </div>
-      <div> gPhone </div>  
-      <div> gDelivery </div>  
-    </h3>
-    <p> gTimestamp </p> 
-    <p> gReadyBy </p> 
-    <div>
-      <span class= "right">Foodrun</span>
-      <span class= "left">Grubhub</span>
-    </div>
-    <br>
-    <hr>
-    <div>
-      <h4> gMarkup</h4>
-    </div>
-    <hr>
-    <p>gComment</p>
-    <p>gDelComment</p>
-  </body>
-  </html>
-`;
 
 /*Helper functions*/
+function createReceipt(name, orderNo, placed, ready, printer, itemLog){
+  var receipt_template =`
+    <!DOCTYPE html>
+    <html>
+    <head> 
+      <style>
+        .right {float: right;}
+        .left {float: left;}
+      </style>
+    </head> 
+    <body>
+      <h3>
+        <div> ${name} </div>
+        <div> ${orderNo} </div>  
+        <div> no p (default) </div>  
+      </h3>
+      <p> ${placed} </p> 
+      <p> ${ready} </p> 
+      <div>
+        <span class= "right"> ${printer} </span>
+        <span class= "left"> Postmates </span>
+      </div>
+      <br>
+      <hr>
+      <div>
+        <h4> ${itemLog}</h4>
+      </div>
+      <hr>
+      <p> order comment </p>
+    </body>
+    </html>
+  `;
+  return receipt_template;
+}
 function getOrderInfo(request_body) {
   let order = {};
   order.delivery_id = request_body.delivery_id;
