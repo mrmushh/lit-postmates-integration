@@ -67,7 +67,6 @@ function makeHTMLReceipts(myOrders){
             </ul>
           `
         }
-        console.log("Constructing receipt for " + p_types[p]);
         let r = createReceipt(myOrders[i].customer_name, myOrders[i].order_number, myOrders[i].placed_at, myOrders[i].ready_by, p_types[p], manifestHTML);
         postData.foodrunHTML = r;
       }
@@ -80,7 +79,6 @@ function makeHTMLReceipts(myOrders){
             </ul>
           `
         }
-        console.log("Constructing receipt for " + p_types[p]);
         let r = createReceipt(myOrders[i].customer_name, myOrders[i].order_number, myOrders[i].placed_at, myOrders[i].ready_by, p_types[p], manifestHTML);
         postData.appHTML = r;
       }
@@ -93,7 +91,6 @@ function makeHTMLReceipts(myOrders){
             </ul>
           `
         }
-        console.log("Constructing receipt for " + p_types[p]);
         let r = createReceipt(myOrders[i].customer_name, myOrders[i].order_number, myOrders[i].placed_at, myOrders[i].ready_by, p_types[p], manifestHTML);
         postData.entreeHTML = r;
       }
@@ -106,7 +103,6 @@ function makeHTMLReceipts(myOrders){
             </ul>
           `
         }
-        console.log("Constructing receipt for " + p_types[p]);
         let r = createReceipt(myOrders[i].customer_name, myOrders[i].order_number, myOrders[i].placed_at, myOrders[i].ready_by, p_types[p], manifestHTML);
         postData.dessertHTML = r;
       }
@@ -129,9 +125,7 @@ function createReceipt(name, orderNo, placed, ready, printer, itemLog){
     </head> 
     <body>
       <h3>
-        <div> ${name} </div>
-        <div> ${orderNo} </div>  
-        <div> no p (default) </div>  
+        <div> ${name} ${orderNo} no p (default) </div>  
       </h3>
       <p> ${placed} </p> 
       <p> ${ready} </p> 
@@ -149,6 +143,7 @@ function createReceipt(name, orderNo, placed, ready, printer, itemLog){
     </body>
     </html>
   `;
+  receipt_template = receipt_template.split("\n").join('')
   return receipt_template;
 }
 function getOrderInfo(request_body) {
