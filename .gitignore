@@ -2,3 +2,5 @@ sandbox-key
 /node_modules
 credentials.json
 token.json
+production-developer-id
+production-key
